@@ -15,6 +15,8 @@ public class PlayerHeadController : MonoBehaviour
     public Vector3 headRespawnPosition;
     
     public LevelManager theLevelManager;
+    public float playerHorizontalVelocity;
+    public float playerVerticalVelocity;
 
     
     // Start is called before the first frame update
@@ -84,12 +86,12 @@ public class PlayerHeadController : MonoBehaviour
                 if (Input.GetAxisRaw ("Horizontal") > 0f)
         {
             playerHorizontalVelocity = moveSpeed;
-            transform.localScale = new Vector3(-2.349521f, 2.349521f, 2.349521f);
+            transform.localScale = new Vector3(-0.2023331f, 0.2023331f, 0.2023331f);
         } 
         else if (Input.GetAxisRaw ("Horizontal") < 0f)
         {
             playerHorizontalVelocity = -moveSpeed;
-            transform.localScale = new Vector3(2.349521f, 2.349521f, 2.349521f);
+            transform.localScale = new Vector3(0.2023331f, 0.2023331f, 0.2023331f);
         }
         else if (Input.GetAxisRaw ("Horizontal") == 0f)
         {
