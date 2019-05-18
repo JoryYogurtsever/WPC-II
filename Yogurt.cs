@@ -7,15 +7,19 @@ public class Yogurt : MonoBehaviour
     public bool isYogurting;
     private Animator myAnim;
     public PlayerController thePlayerBody;
+    public LevelManager theLevelManager;
 //     public Vector3 playerVelocity;
     public float yogurtingDelay;
+    public Vector3 yogurtRespawnPosition;
     
     // Start is called before the first frame update
     void Start()
     {
             thePlayerBody = FindObjectOfType<PlayerController>();
+            theLevelManager = FindObjectOfType<LevelManager>();
             myAnim = GetComponent<Animator>();
-//             gameObject.SetActive(false);
+            gameObject.SetActive(true);
+            yogurtRespawnPosition = transform.position;
 //             playerVelocity = new Vector3 (0f, 0f, 0f);
             isYogurting = false;
     }
@@ -29,6 +33,10 @@ public class Yogurt : MonoBehaviour
 //         {
 //             gameObject.SetActive(false);
 //         }
+//         else if (isYogurting)
+//         {
+//             gameObject.SetActive(true);
+//         }
 //         {
 //             transform.localScale = new Vector3(-0.59983f, 0.59983f, 0.59983f);
 //         }
@@ -36,10 +44,11 @@ public class Yogurt : MonoBehaviour
 //         {
 //             transform.localScale = new Vector3(0.59983f, 0.59983f, 0.59983f);
 //         }
-        if(Input.GetButtonDown ("Jump")) //will use this control for attacking
+        if(Input.GetButtonDown("Jump") && theLevelManager.yogurtCount > 0f) //will use this control for attacking
         { 
-//             gameObject.SetActive(true);
+            gameObject.SetActive(true);
             isYogurting = true;
+            theLevelManager.AddCoins(0, -1);
             StartCoroutine("YogurtingCo");
         }
         myAnim.SetFloat("Horizontal Speed", thePlayerBody.playerHorizontalVelocity);

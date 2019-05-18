@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
     public float waitToRespawn;
     public PlayerController thePlayerBody;
     public PlayerHeadController thePlayerHead;
+    public Yogurt theYogurt;
     
     public GameObject deathSplosion;
     public int coinCount;
@@ -40,11 +41,14 @@ public class LevelManager : MonoBehaviour
     public int healthCount;
     public int infinityCount;
     
+    public ResetOnRespawn[] objectsToReset;
+    
     // Start is called before the first frame update
     void Start()
     {
         thePlayerBody = FindObjectOfType<PlayerController>();
         thePlayerHead = FindObjectOfType<PlayerHeadController>();
+        theYogurt = FindObjectOfType<Yogurt>();
         
         coinText.text = coinCount.ToString();
         yogurtText.text = yogurtCount.ToString();
@@ -52,6 +56,8 @@ public class LevelManager : MonoBehaviour
         
         healthCount = maxHealth;
         infinityCount = -1;
+        
+        objectsToReset = FindObjectsOfType<ResetOnRespawn>();
     }
 
     // Update is called once per frame
@@ -84,8 +90,16 @@ public class LevelManager : MonoBehaviour
         
         thePlayerBody.transform.position = thePlayerBody.bodyRespawnPosition;
         thePlayerHead.transform.position = thePlayerHead.headRespawnPosition;
+        theYogurt.transform.position = theYogurt.yogurtRespawnPosition;
+        theYogurt.isYogurting = false;
         thePlayerBody.gameObject.SetActive(true);
         thePlayerHead.gameObject.SetActive(true);
+        
+        for(int i = 0; i < objectsToReset.Length; i++)
+        {
+            objectsToReset[i].gameObject.SetActive(true);
+            objectsToReset[i].ResetObject();
+        }
     }
     
     public void AddCoins(int coinsToAdd, int yogurtToAdd)
