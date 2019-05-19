@@ -20,6 +20,9 @@ public class LevelManager : MonoBehaviour
     public Text coinText;
     public Text yogurtText;
     public Text livesText;
+    public AudioSource coinSound;
+    public AudioSource levelMusic;
+    public AudioSource gameOverMusic;
     
     public Image heart1;
     public Image heart2;
@@ -42,6 +45,11 @@ public class LevelManager : MonoBehaviour
     public int infinityCount;
     
     public ResetOnRespawn[] objectsToReset;
+    public bool invincible;
+    public int currentLives;
+    public int startingLives;
+    
+    public GameObject gameOverScreen;
     
     // Start is called before the first frame update
     void Start()
@@ -50,14 +58,48 @@ public class LevelManager : MonoBehaviour
         thePlayerHead = FindObjectOfType<PlayerHeadController>();
         theYogurt = FindObjectOfType<Yogurt>();
         
+        if (PlayerPrefs.HasKey("CoinCount"))
+        {
+            coinCount = PlayerPrefs.GetInt("CoinCount");
+        }
+        else
+        {
+            coinCount = 0;
+        }
+        if (PlayerPrefs.HasKey("YogurtCount"))
+        {
+            yogurtCount = PlayerPrefs.GetInt("YogurtCount");
+        }
+        else
+        {
+            yogurtCount = 0;
+        }
+        if (PlayerPrefs.HasKey("InfinityCount"))
+        {
+            infinityCount = PlayerPrefs.GetInt("InfinityCount");
+        }
+        else
+        {
+            infinityCount = -1;
+        }
+        if (PlayerPrefs.HasKey("PlayerLives"))
+        {
+            currentLives = PlayerPrefs.GetInt("PlayerLives");
+        }
+        else
+        {
+            currentLives = startingLives;
+        }
         coinText.text = coinCount.ToString();
         yogurtText.text = yogurtCount.ToString();
         livesText.text = livesCount.ToString();
         
         healthCount = maxHealth;
-        infinityCount = -1;
+//         infinityCount = -1;
         
         objectsToReset = FindObjectsOfType<ResetOnRespawn>();
+//         currentLives = startingLives;
+        livesText.text = currentLives.ToString();
     }
 
     // Update is called once per frame
@@ -72,7 +114,21 @@ public class LevelManager : MonoBehaviour
     
     public void Respawn() 
     {
-        StartCoroutine("RespawnCo");
+        thePlayerBody.knockbackCounter = 0f;
+        currentLives -= 1;
+        livesText.text = currentLives.ToString();
+        
+        if(currentLives > 0f)
+        {
+            StartCoroutine("RespawnCo");
+        } else {
+        thePlayerBody.gameObject.SetActive(false);
+        thePlayerHead.gameObject.SetActive(false);
+        gameOverScreen.SetActive(true);
+        levelMusic.Stop();
+        gameOverMusic.Play();
+        Instantiate(deathSplosion, thePlayerBody.transform.position, new Quaternion(90f, 0f, 0f, 90f));
+        }
     }
     
     public IEnumerator RespawnCo()
@@ -108,15 +164,20 @@ public class LevelManager : MonoBehaviour
         yogurtCount += yogurtToAdd;
         coinText.text = coinCount.ToString();
         yogurtText.text = yogurtCount.ToString();
+        coinSound.Play();
 //         livesText.text = livesCount.ToString();
     }
     
     public void HurtPlayer (int damageToTake)
     {
-        healthCount -= damageToTake; 
-        UpdateHeartMeter();
-        
-        thePlayerBody.Knockback();
+        if(!invincible)
+        {
+            thePlayerBody.hurtSound.Play();
+            healthCount -= damageToTake; 
+            UpdateHeartMeter();
+            
+            thePlayerBody.Knockback();
+        }
     }
     
     public void UpdateHeartMeter()

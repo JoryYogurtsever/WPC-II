@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     
     public float moveSpeed;
     public Rigidbody2D myRigidbody;
+    
+    public bool canMove;
+    
     public bool isAttacking;
     public float attackLength;
     
@@ -24,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public float knockbackLength;
     public float knockbackCounter;
     
+    public AudioSource hurtSound;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -38,13 +43,14 @@ public class PlayerController : MonoBehaviour
         playerHorizontalVelocity = 0f;
         playerVerticalVelocity = 0f;
         knockbackCounter = 0f;
+        canMove = true;
     }
 
     // Update is called once per frame
     void Update()
     {
 //         Debug.Log(Input.GetAxisRaw ("Horizontal"));
-        if(knockbackCounter <= 0)
+        if(knockbackCounter <= 0 && canMove)
         {
             if (Input.GetAxisRaw ("Horizontal") > 0f)
             {
@@ -109,6 +115,7 @@ public class PlayerController : MonoBehaviour
             { 
                 isAttacking = true;
             }
+            theLevelManager.invincible = false;
         }
         
         if(knockbackCounter > 0)
@@ -139,6 +146,7 @@ public class PlayerController : MonoBehaviour
     public void Knockback()
     {
         knockbackCounter = knockbackLength;
+        theLevelManager.invincible = true;
     }
     
     void OnTriggerEnter2D (Collider2D other) 
