@@ -22,7 +22,7 @@ public class YogurtUpEnemy : MonoBehaviour
         if(other.tag == "Enemy")
         {
             Instantiate(deathSplosion, other.transform.position, new Quaternion(90f, 0f, 0f, 90f));
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
     }
 }

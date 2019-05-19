@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour
     public float playerHorizontalVelocity;
     public float playerVerticalVelocity;
     
+    public float knockbackForce;
+    public float knockbackLength;
+    public float knockbackCounter;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -33,79 +37,108 @@ public class PlayerController : MonoBehaviour
 //         playerVelocity = new Vector3(0f, 0f, 0f);
         playerHorizontalVelocity = 0f;
         playerVerticalVelocity = 0f;
+        knockbackCounter = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
 //         Debug.Log(Input.GetAxisRaw ("Horizontal"));
-        if (Input.GetAxisRaw ("Horizontal") > 0f)
+        if(knockbackCounter <= 0)
         {
-            playerHorizontalVelocity = moveSpeed;
-            transform.localScale = new Vector3(-2.349521f, 2.349521f, 2.349521f);
-            //comment out everything below here, and make two variables to determine
-            //horizontal and vertical inputs then make the vector3 in accordance to 
-            //these values below
-           /* 
-                if(Input.GetAxisRaw ("Vertical") > 0f)
+            if (Input.GetAxisRaw ("Horizontal") > 0f)
             {
-                myRigidbody.velocity = new Vector3(moveSpeed/2f, moveSpeed/2f, 0f);
+                playerHorizontalVelocity = moveSpeed;
+                transform.localScale = new Vector3(-2.349521f, 2.349521f, 2.349521f);
+                //comment out everything below here, and make two variables to determine
+                //horizontal and vertical inputs then make the vector3 in accordance to 
+                //these values below
+            /* 
+                    if(Input.GetAxisRaw ("Vertical") > 0f)
+                {
+                    myRigidbody.velocity = new Vector3(moveSpeed/2f, moveSpeed/2f, 0f);
+                } 
+                    else if (Input.GetAxisRaw ("Vertical") < 0f)
+                {
+                    myRigidbody.velocity = new Vector3(moveSpeed/2f, -moveSpeed/2f, 0f);
+                } 
+                    else 
+                {
+                    myRigidbody.velocity = new Vector3(moveSpeed, myRigidbody.velocity.y, 0f);
+                }*/
             } 
-                else if (Input.GetAxisRaw ("Vertical") < 0f)
+            else if (Input.GetAxisRaw ("Horizontal") < 0f)
             {
-                myRigidbody.velocity = new Vector3(moveSpeed/2f, -moveSpeed/2f, 0f);
+                playerHorizontalVelocity = -moveSpeed;
+                transform.localScale = new Vector3(2.349521f, 2.349521f, 2.349521f);
+                    
+    //                 if(Input.GetAxisRaw ("Vertical") > 0f)
+    //             {
+    //                 myRigidbody.velocity = new Vector3(-moveSpeed/2f, moveSpeed/2f, 0f);
+    //             } 
+    //                 else if (Input.GetAxisRaw ("Vertical") < 0f)
+    //             {
+    //                 myRigidbody.velocity = new Vector3(-moveSpeed/2f, -moveSpeed/2f, 0f);
+    //             }   else
+    //             {
+    //                 myRigidbody.velocity = new Vector3(-moveSpeed, myRigidbody.velocity.y, 0f);
+    //             }
+            }
+            else if (Input.GetAxisRaw ("Horizontal") == 0f)
+            {
+                playerHorizontalVelocity = 0f;
+            }
+            if (Input.GetAxisRaw ("Vertical") > 0f) // && Input.GetAxisRaw ("Horizontal") == 0f)
+            {
+    //             myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, moveSpeed, 0f);
+                playerVerticalVelocity = moveSpeed;
             } 
-                else 
+            else if (Input.GetAxisRaw ("Vertical") < 0f) // && Input.GetAxisRaw ("Horizontal") == 0f)
             {
-                myRigidbody.velocity = new Vector3(moveSpeed, myRigidbody.velocity.y, 0f);
-            }*/
-        } 
-        else if (Input.GetAxisRaw ("Horizontal") < 0f)
-        {
-            playerHorizontalVelocity = -moveSpeed;
-            transform.localScale = new Vector3(2.349521f, 2.349521f, 2.349521f);
-                
-//                 if(Input.GetAxisRaw ("Vertical") > 0f)
-//             {
-//                 myRigidbody.velocity = new Vector3(-moveSpeed/2f, moveSpeed/2f, 0f);
-//             } 
-//                 else if (Input.GetAxisRaw ("Vertical") < 0f)
-//             {
-//                 myRigidbody.velocity = new Vector3(-moveSpeed/2f, -moveSpeed/2f, 0f);
-//             }   else
-//             {
-//                 myRigidbody.velocity = new Vector3(-moveSpeed, myRigidbody.velocity.y, 0f);
-//             }
-        }
-        else if (Input.GetAxisRaw ("Horizontal") == 0f)
-        {
-            playerHorizontalVelocity = 0f;
-        }
-        if (Input.GetAxisRaw ("Vertical") > 0f) // && Input.GetAxisRaw ("Horizontal") == 0f)
-        {
-//             myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, moveSpeed, 0f);
-            playerVerticalVelocity = moveSpeed;
-        } 
-        else if (Input.GetAxisRaw ("Vertical") < 0f) // && Input.GetAxisRaw ("Horizontal") == 0f)
-        {
-//             myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, -moveSpeed, 0f);
-            playerVerticalVelocity = -moveSpeed;
-        }
-        else if (Input.GetAxisRaw ("Vertical") == 0f){
-            playerVerticalVelocity = 0f;
-//             playerHorizontalVelocity = 0f;
-//             myRigidbody.velocity = new Vector3(0f, 0f, 0f);
-        }
-        myRigidbody.velocity = new Vector3(playerHorizontalVelocity, playerVerticalVelocity, 0f);
+    //             myRigidbody.velocity = new Vector3(myRigidbody.velocity.x, -moveSpeed, 0f);
+                playerVerticalVelocity = -moveSpeed;
+            }
+            else if (Input.GetAxisRaw ("Vertical") == 0f){
+                playerVerticalVelocity = 0f;
+    //             playerHorizontalVelocity = 0f;
+    //             myRigidbody.velocity = new Vector3(0f, 0f, 0f);
+            }
+            myRigidbody.velocity = new Vector3(playerHorizontalVelocity, playerVerticalVelocity, 0f);
 
-        if(Input.GetButtonDown ("Jump")) //will use this control for attacking
-        { 
-            isAttacking = true;
+            if(Input.GetButtonDown ("Jump")) //will use this control for attacking
+            { 
+                isAttacking = true;
+            }
+        }
+        
+        if(knockbackCounter > 0)
+        {
+            knockbackCounter -= Time.deltaTime;
+            if(transform.localScale.x > 0f && Input.GetAxisRaw("Vertical") > 0f)
+            {
+            myRigidbody.velocity = new Vector3(knockbackForce, -knockbackForce, 0f);
+            }
+            else if(transform.localScale.x <= 0 && Input.GetAxisRaw ("Vertical") > 0f)
+            {
+            myRigidbody.velocity = new Vector3(-knockbackForce, -knockbackForce, 0f);
+            }
+            else if(transform.localScale.x > 0 && Input.GetAxisRaw ("Vertical") <= 0f)
+            {
+            myRigidbody.velocity = new Vector3(knockbackForce, knockbackForce, 0f);
+            }
+            else if(transform.localScale.x <= 0 && Input.GetAxisRaw ("Vertical") <= 0f)
+            {
+            myRigidbody.velocity = new Vector3(-knockbackForce, knockbackForce, 0f);
+            }
         }
 //         playerVelocity = new Vector3(myRigidbody.velocity.x, myRigidbody.velocity.y, 0f);
-        Debug.Log(playerVerticalVelocity);
         myAnim.SetFloat("Horizontal Speed", Mathf.Abs( myRigidbody.velocity.x));
         myAnim.SetFloat("Vertical Speed", Mathf.Abs( myRigidbody.velocity.y));
+    }
+    
+    public void Knockback()
+    {
+        knockbackCounter = knockbackLength;
     }
     
     void OnTriggerEnter2D (Collider2D other) 

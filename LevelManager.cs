@@ -115,6 +115,8 @@ public class LevelManager : MonoBehaviour
     {
         healthCount -= damageToTake; 
         UpdateHeartMeter();
+        
+        thePlayerBody.Knockback();
     }
     
     public void UpdateHeartMeter()
